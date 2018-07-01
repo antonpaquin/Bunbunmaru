@@ -1,0 +1,16 @@
+version: "3"
+services:
+  bunbunmaru:
+    image: user/bunbunmaru:dev
+    restart: unless-stopped
+    ports:
+    - "9115:80"
+    entrypoint: "/bin/bash"
+    command: "/bunbunmaru/start.sh"
+  
+  selenium:
+    image: selenium/standalone-firefox:3.12.0-cobalt
+    ports:
+    - "4444:4444"
+    volumes:
+    - "/dev/shm:/dev/shm"

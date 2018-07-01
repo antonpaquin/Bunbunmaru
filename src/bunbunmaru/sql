@@ -1,0 +1,132 @@
+@create_items
+CREATE TABLE items (
+  feed_id INTEGER,
+  title TEXT,
+  link TEXT,
+  description TEXT,
+  author TEXT,
+  comments_url TEXT,
+  guid TEXT,
+  guid_is_permalink BOOLEAN,
+  pub_date DATETIME,
+  category TEXT,
+  category_domain TEXT,
+  enclosure_url TEXT,
+  enclosure_mime TEXT,
+  enclosure_length INTEGER,
+  source TEXT,
+  source_url TEXT
+);
+
+@create_feeds
+CREATE TABLE feeds (
+  name TEXT,
+  title TEXT,
+  link TEXT,
+  description TEXT,
+  language TEXT,
+  copyright TEXT,
+  managing_editor TEXT,
+  web_master TEXT,
+  category TEXT,
+  category_domain TEXT,
+  ttl INTEGER,
+  image_url TEXT,
+  image_title TEXT,
+  image_link TEXT,
+  image_width TEXT,
+  image_height TEXT
+);
+
+@select_feed_id
+SELECT rowid FROM feeds WHERE name == ?;
+
+@list_feeds
+SELECT rowid, name FROM feeds;
+
+@insert_feed
+INSERT INTO feeds (
+  name,
+  title,
+  link,
+  description,
+  language,
+  copyright,
+  managing_editor,
+  web_master,
+  category,
+  category_domain,
+  ttl,
+  image_url,
+  image_title,
+  image_link,
+  image_width,
+  image_height
+) VALUES (
+  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+);
+
+@insert_rss_item
+INSERT INTO items (
+  feed_id,
+  title,
+  link,
+  description,
+  author,
+  comments_url,
+  guid,
+  guid_is_permalink,
+  pub_date,
+  category,
+  category_domain,
+  enclosure_url,
+  enclosure_mime,
+  enclosure_length,
+  source,
+  source_url
+) VALUES (
+  ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+);
+
+@get_latest
+SELECT
+  title,
+  link,
+  description,
+  author,
+  comments_url,
+  guid,
+  guid_is_permalink,
+  pub_date,
+  category,
+  category_domain,
+  enclosure_url,
+  enclosure_mime,
+  enclosure_length,
+  source,
+  source_url
+FROM items
+WHERE feed_id == ?
+ORDER BY pub_date DESC
+LIMIT 100
+;
+
+@get_feed
+SELECT
+  name,
+  title,
+  link,
+  description,
+  language,
+  copyright,
+  managing_editor,
+  web_master,
+  category,
+  category_domain,
+  ttl,
+  image_url,
+  image_title,
+  image_link,
+  image_width,
+  image_height
+FROM feeds WHERE rowid = ?;
