@@ -81,7 +81,14 @@ def build_channel(name, title, link, description, language, copyright, managing_
     channel.append(e_link)
 
     e_description = etree.Element('description')
-    e_description.text = description
+    if image_url:
+        e_description_img = etree.Element('img')
+        e_description_img.set('src', image_url)
+        e_description_img.set('title', image_title)
+        e_description.append(e_description_img)
+    e_description_text = etree.Element('p')
+    e_description_text.text = description
+    e_description.append(e_description_text)
     channel.append(e_description)
 
     if language:
