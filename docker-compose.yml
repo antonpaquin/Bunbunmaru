@@ -7,6 +7,8 @@ services:
     - "9115:80"
     entrypoint: "/bin/bash"
     command: "/bunbunmaru/start.sh"
+    environment:
+    - TZ=Etc/UTC
   
   selenium:
     image: selenium/standalone-firefox:3.12.0-cobalt
