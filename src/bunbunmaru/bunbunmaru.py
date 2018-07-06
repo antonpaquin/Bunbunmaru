@@ -32,7 +32,7 @@ class Bunbunmaru:
         self._scheduler = BlockingScheduler({
             'apscheduler.jobstores.default': {
                 'type': 'sqlalchemy',
-                'url': 'sqlite:///scheduler.db'
+                'url': 'sqlite:////data/scheduler.db'
             }
         })
         self._db_name = db_name

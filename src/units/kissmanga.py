@@ -16,11 +16,52 @@ from bunbunmaru import Feed, RSSItem
 
 
 manga = [
-    'Shokugeki-no-Soma',
+    'A-Story-About-Treating-a-Female-Knight-Who-Has-Never-Been-Treated-as-a-Woman-as-a-Woman',
+    'Ajin-chan-wa-Kataritai',
+    'Atsumare-Fushigi-Kenkyu-bu',
+    'Bakuon',
+    'Birdmen',
+    'Black-Lagoon',
+    'Boku-no-Hero-Academia',
+    'Chio-chan-no-Tsuugakuro',
+    'Dagashi-Kashi',
+    'Dungeon-Meshi',
+    'Flying-Witch',
+    'Gal-Gohan',
+    'Gekkan-Shojo-Nozaki-kun',
+    'Goblin-Slayer',
+    'Grand-Blue',
+    'Hakumei-to-Mikochi',
+    'Honzuki-no-Gekokujou',
+    'Joou-sama-no-Eshi',
+    'Karakai-Jouzu-no-Takagi-san',
+    'Kobayashi-san-Chi-no-Maid-Dragon',
     'Komi-san-wa-Komyushou-Desu',
+    'Kumo-Desu-ga--Nani-ka',
+    'Kuutei-Dragons',
+    'Made-in-Abyss',
+    'Murenase-Shiiton-Gakuen',
+    'Neko-Musume-Michikusa-Nikki',
+    'Nukoduke',
+    'Ojojojo',
+    'Onepunch-Man',
+    'Orenchi-no-Maid-san',
+    'Ousamatachi-no-Viking',
+    'Rikei-ga-Koi-ni-Ochita-no-de-Shoumeishitemita',
+    'Saotome-Girl-Hitakakusu',
+    'Sen-to-Man',
+    'Sewayaki-Kitsune-no-Senko-san',
+    'Shokugeki-no-Soma',
+    'The-Gamer',
+    'Tongari-Booshi-no-Atorie',
+    'Tsugumomo',
+    'Tsurezure-Children',
+    'Uchi-no-Musume-no-Tame-Naraba-Ore-wa-Moshikashitara-Mao-mo-Taoseru-Kamo-Shirenai-',
+    'Uzaki-chan-wa-Asobitai',
+    'Yuuutsu-to-Succubus-san',
 ]
 
-sqlite_db = os.path.join(os.path.dirname(__file__), 'kissmanga.db')
+sqlite_db = os.path.join(os.path.dirname(__file__), '/data/kissmanga.db')
 
 sql = {
     'create_tables': 'CREATE TABLE manga (mname TEXT, url_hash TEXT, PRIMARY KEY (mname, url_hash));',
@@ -45,7 +86,7 @@ class KissmangaFeed(Feed):
         self._validate()
 
     def get_schedule(self) -> IntervalTrigger:
-        return IntervalTrigger(hours=9, jitter=60*60*3)
+        return IntervalTrigger(hours=24, jitter=60*60*6)
 
     def run(self) -> [RSSItem]:
         self.synchronize_cookies()
@@ -66,7 +107,8 @@ class KissmangaFeed(Feed):
             results.append(failed_scraper(url))
 
         soup = BeautifulSoup(r.text, 'lxml')
-        links = soup.find_all(lambda tag: tag.name == 'a' and tag['href'].startswith('/Manga/{}/'.format(title)))
+        chapter_list = soup.find(attrs={'class': 'chapterList'})
+        links = chapter_list.find_all(lambda tag: tag.name == 'a' and tag['href'].startswith('/Manga/{}/'.format(title)))
 
         urls = [link['href'] for link in links]
         already_seen = check_urls(title, urls)
